@@ -37,7 +37,7 @@ router.get("/generate-certificate/:studentId", async (req, res) => {
     const browser = await puppeteer.launch({
       headless: "new",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || "/opt/render/.cache/puppeteer/chrome/linux-134.0.6998.35/chrome",
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || (await puppeteer.executablePath()),
     });
 
     const page = await browser.newPage();
