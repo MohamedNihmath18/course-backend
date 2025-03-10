@@ -33,8 +33,13 @@ router.get("/generate-certificate/:studentId", async (req, res) => {
       grade: grade.grade,
     });
 
-    // Launch Puppeteer
-    const browser = await puppeteer.launch({ headless: "new", args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    // ✅ FIX: Ensure Puppeteer finds Chrome in Render
+    const browser = await puppeteer.launch({
+      headless: "new",
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || (await puppeteer.executablePath()),
+    });
+
     const page = await browser.newPage();
     await page.setContent(html);
 
@@ -48,7 +53,7 @@ router.get("/generate-certificate/:studentId", async (req, res) => {
     // Send the file to client
     res.download(pdfPath);
   } catch (err) {
-    console.error("Error generating certificate:", err.message);
+    console.error("❌ Error generating certificate:", err.message);
     res.status(500).json({ msg: err.message });
   }
 });
