@@ -33,6 +33,7 @@ router.get("/generate-certificate/:studentId", async (req, res) => {
       grade: grade.grade,
     });
 
+<<<<<<< HEAD
     // ✅ FIX: Ensure Puppeteer finds Chrome in Render
     const browser = await puppeteer.launch({
       headless: "new",
@@ -40,6 +41,10 @@ router.get("/generate-certificate/:studentId", async (req, res) => {
       executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || (await puppeteer.executablePath()),
     });
 
+=======
+    // Launch Puppeteer
+    const browser = await puppeteer.launch({ headless: "new", args: ['--no-sandbox', '--disable-setuid-sandbox'], executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/google-chrome-stable", });
+>>>>>>> 28e2ca2 (Fixed Puppeteer Chrome issue in Render)
     const page = await browser.newPage();
     await page.setContent(html);
 
@@ -50,10 +55,17 @@ router.get("/generate-certificate/:studentId", async (req, res) => {
     await browser.close();
     console.log("✅ PDF Generated at:", pdfPath);
 
+<<<<<<< HEAD
     // Send the file to client
     res.download(pdfPath);
   } catch (err) {
     console.error("❌ Error generating certificate:", err.message);
+=======
+ 
+    res.download(pdfPath);
+  } catch (err) {
+    console.error("Error generating certificate:", err.message);
+>>>>>>> 28e2ca2 (Fixed Puppeteer Chrome issue in Render)
     res.status(500).json({ msg: err.message });
   }
 });

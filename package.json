@@ -4,7 +4,12 @@
   "main": "index.js",
   "scripts": {
   "start": "node server.js",
+<<<<<<< HEAD
   "install-puppeteer": "npx puppeteer browsers install chrome"
+=======
+  "install-puppeteer": "npx puppeteer browsers install chrome",
+  "postinstall": "npx puppeteer browsers install chrome"
+>>>>>>> 28e2ca2 (Fixed Puppeteer Chrome issue in Render)
 },
 
   "keywords": [],
