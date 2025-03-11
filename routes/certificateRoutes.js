@@ -33,22 +33,31 @@ router.get("/generate-certificate/:studentId", async (req, res) => {
       grade: grade.grade,
     });
 
-    // Launch Puppeteer
-    const browser = await puppeteer.launch({ headless: "new", args: ['--no-sandbox', '--disable-setuid-sandbox'], executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/google-chrome-stable", });
+    // ✅ FIX: Launch Puppeteer with correct Chrome path for Render
+    const browser = await puppeteer.launch({
+      headless: "new",
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/google-chrome-stable",
+    });
+
     const page = await browser.newPage();
     await page.setContent(html);
 
-    // Save PDF Locally
+    // ✅ Save PDF Locally
     const pdfPath = path.join(certificatesDir, `${student.name}_certificate.pdf`);
     await page.pdf({ path: pdfPath, format: "A4" });
 
     await browser.close();
     console.log("✅ PDF Generated at:", pdfPath);
 
- 
-    res.download(pdfPath);
+    // ✅ Check if file exists before downloading
+    if (fs.existsSync(pdfPath)) {
+      res.download(pdfPath);
+    } else {
+      throw new Error("PDF file not found after generation.");
+    }
   } catch (err) {
-    console.error("Error generating certificate:", err.message);
+    console.error("❌ Error generating certificate:", err.message);
     res.status(500).json({ msg: err.message });
   }
 });
